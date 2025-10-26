@@ -20,7 +20,7 @@ public class conexion {
         
         try {
             //servidor, usuario.contraseñaUsuario
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             conectar = DriverManager.getConnection("jdbc:mysql://localhost/utacuarto", "root", "");
             //JOptionPane.showMessageDialog(null, "Te conectaste");
         } catch (Exception ex) {
