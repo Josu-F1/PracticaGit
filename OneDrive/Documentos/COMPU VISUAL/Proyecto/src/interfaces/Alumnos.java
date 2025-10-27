@@ -447,7 +447,6 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         jbtnEliminar.setEnabled(true);
         jbtnEditar.setEnabled(true);
         jbtnCancelar.setEnabled(true);
-        //jBtnRCedula.setEnabled(true);
     }
 
     public void botonesEliminar() {
@@ -825,7 +824,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
 
     private void jbtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelarActionPerformed
         textosInicio();
-        botonesInicio();// TODO add your handling code here:
+        botonesInicio();
     }//GEN-LAST:event_jbtnCancelarActionPerformed
 
     /**

@@ -253,7 +253,7 @@ public class InscripcionCurso extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnInscribirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnInscribirActionPerformed
-        realizarInscripcion();// TODO add your handling code here:
+        realizarInscripcion();
     }//GEN-LAST:event_jbtnInscribirActionPerformed
 
     /**

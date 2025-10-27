@@ -279,7 +279,7 @@ public class Principal extends javax.swing.JFrame {
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         InscripcionCurso i = new InscripcionCurso();
         escritorioPrincipal.add(i);
-        i.setVisible(true);// TODO add your handling code here:
+        i.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
@@ -333,7 +333,7 @@ public class Principal extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
-        }// TODO add your handling code here:
+        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -370,7 +370,7 @@ public class Principal extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
-        }// TODO add your handling code here:
+        }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     /**
