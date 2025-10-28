@@ -17,13 +17,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author bl250
  */
-public class Alumnos extends javax.swing.JInternalFrame  {
+public class Alumnos extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Alumnos
      */
     public Alumnos() {
         initComponents();
+        configurarGeneroComboBox();
         mostrarDatos();
         cargarCampos();
         botonesInicio();
@@ -32,6 +33,12 @@ public class Alumnos extends javax.swing.JInternalFrame  {
 
     }
 
+    private void configurarGeneroComboBox() {
+        // Asegura que el JComboBox tenga el valor inicial 'Seleccione' y que esté deshabilitado.
+        // El diseñador lo inicializó con "Hombre", "Mujer", lo modificamos aquí para incluir "Seleccione".
+        jcboxGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione", "Hombre", "Mujer" }));
+    }
+    
     private void ValidarEntrada() {
         // --- Validación Cédula (Solo 10 dígitos) ---
         jtxtCedula.addKeyListener(new KeyAdapter() {
@@ -157,6 +164,9 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         } else if (jtxtDireccion.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Debe ingresar la direccion");
             jtxtDireccion.requestFocus();
+        } else if (jcboxGenero.getSelectedIndex() == 0) { // Índice 0 es "Seleccione"
+            JOptionPane.showMessageDialog(null, "Debe seleccionar el género.");
+            jcboxGenero.requestFocus();
         } else {
             try {
 
@@ -173,7 +183,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
 
                 conexion cn = new conexion();
                 Connection cc = (Connection) cn.conectar();
-                String Sql = "insert into estudiantes value(?,?,?,?,?)";
+                String Sql = "insert into estudiantes value(?,?,?,?,?,?)";
                 PreparedStatement psd = cc.prepareStatement(Sql);
                 psd.setString(1, jtxtCedula.getText().trim());
                 psd.setString(2, jtxtNombre.getText().trim());
@@ -192,10 +202,12 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                     }
                 }
                 if (jtxtTelefono.getText().isEmpty()) {
-                    psd.setString(5, "0000000000"); // Asigna ceros si está vacío
+                    psd.setString(5, "0900000000"); // Asigna ceros si está vacío
                 } else {
                     psd.setString(5, jtxtTelefono.getText());     // Asigna el valor validado
                 }
+                String genero = jcboxGenero.getSelectedItem().toString();
+                psd.setString(6, genero);
                 int opc = psd.executeUpdate();
                 if (opc > 0) {
                     JOptionPane.showMessageDialog(null, "Se inserto los datos");
@@ -215,8 +227,8 @@ public class Alumnos extends javax.swing.JInternalFrame  {
     public void mostrarDatos() {
         try {
             DefaultTableModel tabla = new DefaultTableModel();
-            String titulos[] = {"Cedula", "Nombre", "Apellido", "Direccion", "Telefono"};
-            String registros[] = new String[5];
+            String titulos[] = {"Cedula", "Nombre", "Apellido", "Direccion", "Telefono", "Genero"};
+            String registros[] = new String[6];
             tabla = new DefaultTableModel(null, titulos);
 
             conexion cn = new conexion();
@@ -230,6 +242,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                 registros[2] = rs.getString("estapellido");  //estapellido
                 registros[3] = rs.getString("estdireccion");  //estdireccion
                 registros[4] = rs.getString("esttelefono");  //esttelefono
+                registros[5] = rs.getString("estgenero");
                 tabla.addRow(registros);
                 jtblAlumnos.setModel(tabla);
             }
@@ -280,7 +293,14 @@ public class Alumnos extends javax.swing.JInternalFrame  {
             }
             // Si pasa la validación, usa el valor ingresado
             telefonoParaSQL = telefono;
+            
         }
+        if (jcboxGenero.getSelectedIndex() == 0) { 
+            JOptionPane.showMessageDialog(this, "Debe seleccionar el Género.", "Campo Requerido", JOptionPane.WARNING_MESSAGE);
+            jcboxGenero.requestFocus();
+            return;
+        }
+        String generoSeleccionado = jcboxGenero.getSelectedItem().toString();
         try {
             conexion cn = new conexion();
             Connection cc = (Connection) cn.conectar();
@@ -290,7 +310,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                     + ", estapellido='" + jtxtApellido.getText()
                     + "', estdireccion='" + jtxtDireccion.getText()
                     + "', esttelefono='" + telefonoParaSQL + "'" // Se agregó el campo teléfono
-                    + " where estcedula='" + jtxtCedula.getText() + "'";
+                    + ", estgenero='" + generoSeleccionado + "'" + " where estcedula='" + jtxtCedula.getText() + "'";
 
             PreparedStatement psd = cc.prepareStatement(Sql);
 
@@ -339,6 +359,10 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                     jtxtApellido.setText(jtblAlumnos.getValueAt(fila, 2).toString().trim());
                     jtxtDireccion.setText(jtblAlumnos.getValueAt(fila, 3).toString().trim());
                     jtxtTelefono.setText(jtblAlumnos.getValueAt(fila, 4).toString().trim());
+                    if (jtblAlumnos.getColumnCount() > 5) {
+                         String genero = jtblAlumnos.getValueAt(fila, 5).toString().trim();
+                         jcboxGenero.setSelectedItem(genero);
+                    }
                     botonesEliminar();
                     botonesEditar();
                     textosEditar();
@@ -353,8 +377,8 @@ public class Alumnos extends javax.swing.JInternalFrame  {
 
         try {
             DefaultTableModel tabla = new DefaultTableModel();
-            String titulos[] = {"Cedula", "Nombre", "Apellido", "Direccion", "Telefono"};
-            String registros[] = new String[5];
+            String titulos[] = {"Cedula", "Nombre", "Apellido", "Direccion", "Telefono", "Genero"};
+            String registros[] = new String[6];
             tabla = new DefaultTableModel(null, titulos);
 
             conexion cn = new conexion();
@@ -378,6 +402,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                 registros[2] = rs.getString("estapellido");
                 registros[3] = rs.getString("estdireccion");
                 registros[4] = rs.getString("esttelefono");
+                registros[5] = rs.getString("estgenero");
                 tabla.addRow(registros);
             }
 
@@ -399,6 +424,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         jtxtApellido.setText("");
         jtxtDireccion.setText("");
         jtxtTelefono.setText("");
+        jcboxGenero.setSelectedIndex(0);
     }
 
     public void botonesInicio() {
@@ -415,6 +441,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         jtxtApellido.setEnabled(false);
         jtxtDireccion.setEnabled(false);
         jtxtTelefono.setEnabled(false);
+        jcboxGenero.setEnabled(false);
     }
 
     public void botonesNuevo() {
@@ -431,6 +458,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         jtxtApellido.setEnabled(true);
         jtxtDireccion.setEnabled(true);
         jtxtTelefono.setEnabled(true);
+        jcboxGenero.setEnabled(true);
     }
 
     public void textosEditar() {
@@ -439,6 +467,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         jtxtApellido.setEnabled(true);
         jtxtDireccion.setEnabled(true);
         jtxtTelefono.setEnabled(true);
+        jcboxGenero.setEnabled(true);
     }
 
     public void botonesEditar() {
@@ -482,6 +511,8 @@ public class Alumnos extends javax.swing.JInternalFrame  {
         jtxtApellido = new javax.swing.JTextField();
         jtxtTelefono = new javax.swing.JTextField();
         jtxtDireccion = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jcboxGenero = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jbtnNuevo = new javax.swing.JButton();
         jbtnGuardar = new javax.swing.JButton();
@@ -579,31 +610,41 @@ public class Alumnos extends javax.swing.JInternalFrame  {
             }
         });
 
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel10.setText("Genero:");
+
+        jcboxGenero.setFont(new java.awt.Font("Segoe UI", 3, 12)); // NOI18N
+        jcboxGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hombre", "Mujer" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jtxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtxtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtxtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addComponent(jcboxGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 63, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(42, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jtxtCedula, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -611,11 +652,11 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(jtxtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jtxtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jtxtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -623,7 +664,11 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jtxtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(jcboxGenero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(250, 250, 250));
@@ -792,9 +837,9 @@ public class Alumnos extends javax.swing.JInternalFrame  {
                 .addComponent(jLabel13)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(196, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
 
         pack();
@@ -867,6 +912,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -888,6 +934,7 @@ public class Alumnos extends javax.swing.JInternalFrame  {
     private javax.swing.JButton jbtnEliminar;
     private javax.swing.JButton jbtnGuardar;
     private javax.swing.JButton jbtnNuevo;
+    private javax.swing.JComboBox<String> jcboxGenero;
     private javax.swing.JTable jtblAlumnos;
     private javax.swing.JTextField jtxtApellido;
     private javax.swing.JTextField jtxtBuscarCedula;
@@ -897,5 +944,4 @@ public class Alumnos extends javax.swing.JInternalFrame  {
     private javax.swing.JTextField jtxtTelefono;
     // End of variables declaration//GEN-END:variables
 
-    
 }
