@@ -95,11 +95,11 @@ public class Login extends javax.swing.JFrame {
                         // **CLAVE:** Llamada al método SHA-256 interno para verificación
                         if (verificarClave(password, claveHashAlmacenado)) {
                             // Autenticación exitosa
-                            JOptionPane.showMessageDialog(this,
+                            /*JOptionPane.showMessageDialog(this,
                                     "¡Bienvenido, " + usuario + "! Rol: " + rol,
                                     "Login Exitoso",
                                     JOptionPane.INFORMATION_MESSAGE
-                            );
+                            );*/
                             // 1. Creamos la ventana Principal usando el nuevo constructor
                             Principal ventanaPrincipal = new Principal(usuario, rol);
 
