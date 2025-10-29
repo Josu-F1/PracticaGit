@@ -15,6 +15,7 @@ public class PracticarGit {
      */
     public static void main(String[] args) {
         System.out.println("hola josu");
+        System.out.println("otra prueba");
     }
     
 }
