@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ad0e3c5d-b61c-4702-8ad5-f0efd9c1d5c1">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ad0e3c5d-b61c-4702-8ad5-f0efd9c1d5c1">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -14,7 +14,14 @@
 		</conditionalStyle>
 	</style>
 	<queryString>
-		<![CDATA[select * from estudiantes]]>
+		<![CDATA[SELECT
+    e.*,                
+    c.nombre_curso       
+FROM
+    estudiantes e
+JOIN
+    curso c
+    ON e.estcedula = c.estcedula;]]>
 	</queryString>
 	<field name="estcedula" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -29,6 +36,9 @@
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<field name="esttelefono" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nombre_curso" class="java.lang.String">
 		<fieldDescription><![CDATA[]]></fieldDescription>
 	</field>
 	<background>
@@ -72,39 +82,43 @@
 	<columnHeader>
 		<band height="26" splitType="Stretch">
 			<staticText>
-				<reportElement style="Column header" x="0" y="7" width="111" height="18" forecolor="#000000" uuid="81541d50-850f-4b89-ac20-007553665ab4"/>
+				<reportElement style="Column header" x="0" y="7" width="84" height="18" forecolor="#000000" uuid="81541d50-850f-4b89-ac20-007553665ab4"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[CEDULA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="111" y="7" width="111" height="18" forecolor="#000000" uuid="945c55a1-6419-42fb-8edc-4e159d02df10"/>
+				<reportElement style="Column header" x="84" y="7" width="93" height="18" forecolor="#000000" uuid="945c55a1-6419-42fb-8edc-4e159d02df10"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[NOMBRE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="222" y="7" width="111" height="18" forecolor="#000000" uuid="616c5e5f-5575-48bc-8334-28458f9511c5"/>
+				<reportElement style="Column header" x="177" y="7" width="92" height="18" forecolor="#000000" uuid="616c5e5f-5575-48bc-8334-28458f9511c5"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[APELLIDO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="333" y="7" width="111" height="18" forecolor="#000000" uuid="232e0c6e-18be-402a-93fb-ed3207929988"/>
+				<reportElement style="Column header" x="269" y="7" width="102" height="18" forecolor="#000000" uuid="232e0c6e-18be-402a-93fb-ed3207929988"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[DIRECCION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement style="Column header" x="444" y="7" width="111" height="18" forecolor="#000000" uuid="3dbaa02e-03c6-420a-a700-cff8322259fd"/>
+				<reportElement style="Column header" x="371" y="7" width="92" height="18" forecolor="#000000" uuid="3dbaa02e-03c6-420a-a700-cff8322259fd"/>
 				<textElement>
 					<font isBold="false"/>
 				</textElement>
 				<text><![CDATA[TELEFONO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="463" y="7" width="90" height="19" uuid="44dad9ab-93bc-4054-8e6d-a7b478ce329d"/>
+				<text><![CDATA[CURSO]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -113,39 +127,43 @@
 			<frame>
 				<reportElement style="Row" mode="Opaque" x="0" y="0" width="555" height="18" uuid="f9e63572-a901-49bf-adfc-c0be57efc08b"/>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="0" y="0" width="111" height="18" uuid="1575ecc4-8cc5-454e-93b8-80d4d6e1a053"/>
+					<reportElement style="Detail" positionType="Float" x="0" y="0" width="84" height="18" uuid="1575ecc4-8cc5-454e-93b8-80d4d6e1a053"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{estcedula}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="111" y="0" width="111" height="18" uuid="7aa05c94-61f0-40dc-a0c2-5cba5aac396e"/>
+					<reportElement style="Detail" positionType="Float" x="84" y="0" width="93" height="18" uuid="7aa05c94-61f0-40dc-a0c2-5cba5aac396e"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{estnombre}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="222" y="0" width="111" height="18" uuid="e8005cd9-0332-4817-b2bd-1ecc59aeac44"/>
+					<reportElement style="Detail" positionType="Float" x="177" y="0" width="92" height="18" uuid="e8005cd9-0332-4817-b2bd-1ecc59aeac44"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{estapellido}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="333" y="0" width="111" height="18" uuid="f8a85a0b-537b-45aa-a381-588a79f9bdcc"/>
+					<reportElement style="Detail" positionType="Float" x="269" y="0" width="102" height="18" uuid="f8a85a0b-537b-45aa-a381-588a79f9bdcc"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{estdireccion}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true">
-					<reportElement style="Detail" positionType="Float" x="444" y="0" width="111" height="18" uuid="94a1ac88-2c4f-4fa0-9653-0e9ee21dd338"/>
+					<reportElement style="Detail" positionType="Float" x="371" y="0" width="92" height="18" uuid="94a1ac88-2c4f-4fa0-9653-0e9ee21dd338"/>
 					<textElement>
 						<font size="14"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{esttelefono}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="463" y="2" width="90" height="16" uuid="a9abe502-16e8-4834-838d-484950c29bbc"/>
+					<textFieldExpression><![CDATA[$F{nombre_curso}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>
