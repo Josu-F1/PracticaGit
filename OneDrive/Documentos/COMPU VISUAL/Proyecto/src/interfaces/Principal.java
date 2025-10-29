@@ -99,6 +99,7 @@ public class Principal extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -141,8 +142,8 @@ public class Principal extends javax.swing.JFrame {
         escritorioPrincipalLayout.setVerticalGroup(
             escritorioPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(escritorioPrincipalLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel1)
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jlblBienvenida)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -204,6 +205,14 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenuItem4);
+
+        jMenuItem5.setText("Curso");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem5);
 
         jMenuBar1.add(jMenu2);
 
@@ -373,6 +382,52 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        conexion cc = new conexion();
+        Connection cn = null;
+
+        try {
+            cn = cc.conectar();
+            if (cn == null) {
+                JOptionPane.showMessageDialog(this, "No se pudo establecer la conexión con la base de datos.", "Error de Conexión", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String rutaReporte = "src/reportes/ReporteXCurso.jrxml";
+            String cursoIngresado = JOptionPane.showInputDialog(this, "Ingrese el curso:");
+
+            if (cursoIngresado == null || cursoIngresado.trim().isEmpty()) {
+                return; // si cancelan o dejan vacío
+            }
+
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("curso", cursoIngresado);
+
+            JasperReport reporte = JasperCompileManager.compileReport(rutaReporte);
+            JasperPrint imprimir = JasperFillManager.fillReport(reporte, parametros, cn);
+
+            if (imprimir.getPages().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "No se encontraron resultados para el curso ingresado.", "Reporte Vacío", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // 👇 Mostrar dentro del escritorio
+            mostrarReporteInterno(imprimir, "Reporte por Curso");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al generar el reporte:\n" + e.getMessage(), "Error de Reporte", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } finally {
+            try {
+                if (cn != null && !cn.isClosed()) {
+                    cn.close();
+                }
+            } catch (Exception e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -426,6 +481,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel jlblBienvenida;
     private javax.swing.JLabel jlblRol;
