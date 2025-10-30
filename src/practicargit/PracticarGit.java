@@ -20,10 +20,7 @@ public class PracticarGit {
         
         System.out.println("hola¡¡¡¡¡¡");
         
-        
         System.out.println(" para ver que pasa");
-        
-        System.out.println("hhhhh");
     }
     
 }
